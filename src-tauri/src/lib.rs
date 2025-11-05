@@ -59,6 +59,7 @@ pub fn run() {
 
     let exit_code = app.run_return(|_app_handle, event| match event {
         tauri::RunEvent::ExitRequested { api, .. } => {
+            println!("Exit requested");
             api.prevent_exit();
         }
         _ => {}
