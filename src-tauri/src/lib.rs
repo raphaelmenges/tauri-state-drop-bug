@@ -35,6 +35,7 @@ impl State {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    /*
     tauri::Builder::default()
         .setup(move |app| {
             app.manage(Mutex::new(State::new()));
@@ -44,4 +45,25 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![greet])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+    */
+
+    let app = tauri::Builder::default()
+        .setup(move |app| {
+            app.manage(Mutex::new(State::new()));
+            Ok(())
+        })
+        .plugin(tauri_plugin_opener::init())
+        .invoke_handler(tauri::generate_handler![greet])
+        .build(tauri::generate_context!())
+        .expect("error while building tauri application");
+
+    let exit_code = app.run_return(|_app_handle, event| match event {
+        tauri::RunEvent::ExitRequested { api, .. } => {
+            api.prevent_exit();
+        }
+        _ => {}
+    });
+
+    println!("Exit Code =  {}", exit_code);
+    std::process::exit(exit_code);
 }
