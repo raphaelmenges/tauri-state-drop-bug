@@ -37,7 +37,7 @@ impl State {
 pub fn run() {
     tauri::Builder::default()
         .setup(move |app| {
-            app.manage(Mutex::new(State { ..State::new() }));
+            app.manage(Mutex::new(State::new()));
             Ok(())
         })
         .plugin(tauri_plugin_opener::init())
